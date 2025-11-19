@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student.school_name }}の詳細</title>
+</head>
+<body>
+
+    <h1>
+        {{ student.school_name }}
+    </h1>
+
+    <p><strong>担任教師名:</strong>{{student.teacher_name}}</p>
+    <p><strong>メール:</strong>{{student.email}}</p>
+    <p><strong>生徒名:</strong>{{student.student_name | default:"未割り当て"}}</p>
+    <p><strong>タグ:</strong>
+        {% for tag in student.tags.all %}
+        <span style="background-color: #eee; padding: 2px;">{{tag.name}}</span>
+        {% empty %}
+        -
+        {% endfor %}
+    </p>
+    <p><strong>作成日時:</strong>{{student.created_at}}</p>
+    
+    <hr>
+    
+    <h3>参加記録</h3>
+    <ul>
+        {% for activity in student.activity_set.all %}
+        <li>
+        {{ activity.activity_date }} [{{ activity.get_status_display}}]
+        <br>
+        {{ activity.note | linebreaksbr}}
+        </li>
+        {% empty %}
+        <li>参加記録はありません</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    <a href="{% url 'student_list' %}">一覧に戻る</a>
+</body>
+</html>
