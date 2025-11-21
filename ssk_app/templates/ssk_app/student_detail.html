@@ -11,6 +11,11 @@
         {{ student.school_name }}
     </h1>
 
+    <p>
+        <a href="{% url 'student_update' student.pk %}">[編集する]</a>
+        <a href="{% url 'student_delete' student.pk %}" style="color: red;">[削除する]</a>
+    </p>
+
     <p><strong>担任教師名:</strong>{{student.teacher_name}}</p>
     <p><strong>メール:</strong>{{student.email}}</p>
     <p><strong>生徒名:</strong>{{student.student_name | default:"未割り当て"}}</p>

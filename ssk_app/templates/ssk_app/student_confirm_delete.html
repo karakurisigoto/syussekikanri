@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <title>削除の確認</title>
+</head>
+<body>
+    <h1>{{object.school_name}}を本当に削除しますか？</h1>
+
+    <p>この作業は元に戻せません</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" style="color: red;">はい、削除します</button>
+
+        <a href="{% url 'student_detail' object.pk %}">いいえ、キャンセルします</a>
+
+    </form>
+    
+    
+</body>
+</html>

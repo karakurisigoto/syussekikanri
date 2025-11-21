@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy #リダイレクト先を作るためにインポートする
 from .models import Student
+from .forms import StudentForm #作成したフォームをインポートする
+
 
   
 # Create your views here.
@@ -31,3 +34,24 @@ class StudentDetailView(DetailView):
     template_name = 'ssk_app/student_detail.html'
     #3.テンプレート内で使う変数（指定しない場合は'object'になるsつけない）
     context_object_name ='student'
+    
+     #生徒を新規登録のビュー
+class StudentCreateView(CreateView):
+    model = Student
+    form_class =StudentForm
+    template_name ='ssk_app/student_form.html' #新規も更新も同じテンプレートを使い回す
+    success_url = reverse_lazy('student_list')#成功したら一覧ページへリダイレクト
+    
+    #生徒の更新ビュー
+class StudentUpdateView(UpdateView):
+    model = Student
+    form_class =StudentForm
+    template_name ='ssk_app/student_form.html' #新規も更新も同じテンプレートを使い回す
+    success_url = reverse_lazy('student_list')#成功したら一覧ページへリダイレクト
+    # <int:pk>で渡されたID顧客のデータを自動でフォームでセットしてくれる
+    
+    #顧客削除のビュー
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'ssk_app/student_confirm_delete.html'#削除確認用の専用テンプレート
+    success_url = reverse_lazy('student_list')#成功したら一覧ページへリダイレクト
