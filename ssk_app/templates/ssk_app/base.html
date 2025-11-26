@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}出席管理アプリケーション{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <span>Django出席管理</span>
+            {% if user.is_authenticated %}
+            <span>こんにちは、{{user.username}}さん</span>|
+            <a href="{% url 'student_list' %}">生徒一覧</a>|
+            <a href="{% url 'student_create' %}">生徒登録</a>|
+            <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+
+                {% csrf_token %}
+                <button type="submit" 
+                style="background: none; 
+                       border: none; 
+                       color: blue; 
+                       text-decoration: underline; 
+                       cursor: pointer; 
+                       padding: 0;
+                       font-family: inherit;
+                       font-size: inherit;
+                " >
+                ログアウト
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">ログイン</a>
+            {% endif %}
+        </nav>
+    </header>
+    <hr>
+     
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+
+</body>
+</html>

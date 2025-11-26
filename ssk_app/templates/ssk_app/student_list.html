@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生徒一覧</title>
-</head>
-<body>
-
+    {% extends 'ssk_app/base.html' %}
+    {% block title %}
+         生徒一覧
+    {% endblock %}
+    {% block content %}
     <h1>
         生徒一覧
     </h1>
@@ -16,9 +12,9 @@
     <table border="1">
         <thead>
             <tr>
-                <学校名>
-                <生徒名>
-                <メールアドレス>
+                <th><学校名></th>
+                <th><生徒名></th>
+                <th><メールアドレス></th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +34,6 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
-</body>
-</html>
+    </table> 
+
+{% endblock %}

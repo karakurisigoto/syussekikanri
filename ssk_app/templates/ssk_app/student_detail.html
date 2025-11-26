@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ student.school_name }}の詳細</title>
-</head>
-<body>
+{% extends 'ssk_app/base.html' %}
+{% block title %}
+     生徒一覧
+{% endblock %}
+{% block content %}
+
 
     <h1>
         {{ student.school_name }}
@@ -45,5 +43,4 @@
 
     <hr>
     <a href="{% url 'student_list' %}">一覧に戻る</a>
-</body>
-</html>
+{% endblock %}

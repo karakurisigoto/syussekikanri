@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <title>
-        {% if object %}{{object.school_name }} の編集{% else %}生徒の新規登録
-        {% endif %}
-    </title>
-</head>
-<body>
+{% extends 'ssk_app/base.html' %}
+{% block title %}
+     生徒一覧
+{% endblock %}
+{% block content %}
     <h1>
         {% if object %}{{object.school_name }} の編集{% else %}生徒の新規登録
         {% endif %}
@@ -22,5 +16,4 @@
 
     <br>
     <a href="{% url 'student_list' %}">一覧に戻る</a>
-</body>
-</html>
+{% endblock %}

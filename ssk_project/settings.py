@@ -125,3 +125,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#ログイン後にリダイレクトするさ秋のURL名前
+LOGIN_REDIRECT_URL =' student_list'
+#ログアウト後にリダイレクトする先のURL名前
+LOGOUT_REDIRECT_URL = 'login' #ログアウトしたらログインページに飛ばす

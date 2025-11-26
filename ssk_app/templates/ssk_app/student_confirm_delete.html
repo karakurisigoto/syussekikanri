@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <title>削除の確認</title>
-</head>
-<body>
+{% extends 'ssk_app/base.html' %}
+{% block title %}
+     生徒一覧
+{% endblock %}
+{% block content %}
     <h1>{{object.school_name}}を本当に削除しますか？</h1>
 
     <p>この作業は元に戻せません</p>
@@ -19,5 +16,4 @@
     </form>
     
     
-</body>
-</html>
+{% endblock %}

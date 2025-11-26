@@ -20,5 +20,7 @@ from django.urls import path, include #includeをインポート
 urlpatterns = [
     path('admin/', admin.site.urls),
     #'http://127.0.0.1:800/'へのアクセスをssk_appのurls.pyに引き渡す
-    path('', include('ssk_app.urls'))
+    #Djyango標準の承認URL(login.logoutなどを)'accounts/'というパスで読み込む
+    path('accounts/',include('django.contrib.auth.urls')),
+    path('', include('ssk_app.urls')),
 ]
