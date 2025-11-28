@@ -1,46 +1,73 @@
 {% extends 'ssk_app/base.html' %}
 {% block title %}
-     生徒一覧
+{{student.school_name}}
+     の詳細
 {% endblock %}
 {% block content %}
+    <div class="d-flex justify-content-between align-items-ceneter mb-3">
+        <h1>
+            {{ student.school_name }}
+        </h1>
 
+        <div>
+            <a href="{% url 'student_update' student.pk %}" class="btn btn-secondary">
+                [編集する]
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+               data-bs-target="#deleteConfirmModal">
+                  [削除する]
+            </button>
+        </div>
+    </div>
+        
+    <div class="card">
+        <div class="card-body">
+        <p><strong>生徒名:</strong>{{student.student_name}}</p>
+        <p><strong>担任教師名:</strong>{{student.teacher_name}}</p>
+        <p><strong>メール:</strong>{{student.email}}</p>
+        </div>
+    </div>
 
-    <h1>
-        {{ student.school_name }}
-    </h1>
-
-    <p>
-        <a href="{% url 'student_update' student.pk %}">[編集する]</a>
-        <a href="{% url 'student_delete' student.pk %}" style="color: red;">[削除する]</a>
-    </p>
-
-    <p><strong>担任教師名:</strong>{{student.teacher_name}}</p>
-    <p><strong>メール:</strong>{{student.email}}</p>
-    <p><strong>生徒名:</strong>{{student.student_name | default:"未割り当て"}}</p>
-    <p><strong>タグ:</strong>
-        {% for tag in student.tags.all %}
-        <span style="background-color: #eee; padding: 2px;">{{tag.name}}</span>
-        {% empty %}
-        -
-        {% endfor %}
-    </p>
-    <p><strong>作成日時:</strong>{{student.created_at}}</p>
-    
+    <h3 class="mt-4">参加記録</h3>
+    <div class="card">
+        <div class="card-body">
+        </div>
+    </div>
     <hr>
-    
-    <h3>参加記録</h3>
-    <ul>
-        {% for activity in student.activity_set.all %}
-        <li>
-        {{ activity.activity_date }} [{{ activity.get_status_display}}]
-        <br>
-        {{ activity.note | linebreaksbr}}
-        </li>
-        {% empty %}
-        <li>参加記録はありません</li>
-        {% endfor %}
-    </ul>
 
-    <hr>
-    <a href="{% url 'student_list' %}">一覧に戻る</a>
+    <a href="{% url 'student_list' %}" class="btn btn-outline-primary">一覧に戻る</a>
+    
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" 
+         aria-labelledby="deleteModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">削除の確認</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                本当に{{student.school_name}}を削除しますか？
+                <br>この作業は戻せません。
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                キャンセル
+                </button>
+                <form action="{% url 'student_delete' student.pk %}"
+                method="POST"
+                style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        はい、削除します。
+                    </button>
+                </form>
+            </div>
+         </div>
+    </div>
+</div>
+
 {% endblock %}

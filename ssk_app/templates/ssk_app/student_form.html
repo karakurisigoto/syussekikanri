@@ -1,7 +1,13 @@
 {% extends 'ssk_app/base.html' %}
 {% block title %}
-     生徒一覧
+{% if object %}
+編集
+{% else %}
+生徒の新規登録
+{% endif %}
 {% endblock %}
+
+
 {% block content %}
     <h1>
         {% if object %}{{object.school_name }} の編集{% else %}生徒の新規登録
@@ -9,11 +15,48 @@
     </h1>
 
     <form method="POST">
-        {% csrf_token %}{{form.as_p}}
+        {% csrf_token %}
+       
+        <div class="mb-3">
+            {{form.school_name.label_tag}}
+            {{form.school_name}}
+        </div>
+        <div class="mb-3">
+            {{form.student_name.label_tag}}
+            {{form.student_name}}
+        </div>
+        <div>
+            {{form.email.label_tag}}
+            {{form.email}}
+        </div>
+        <div>
+            {{form.user.label_tag}}
+            {{form.user}}
+        </div>
+        <div>
+            {{form.tags.label_tag}}
+            {{form.tags}}
+        </div>
 
-        <button type="submit">保存する</button>
+        <button type="submit" class="btn btn-success">保存する</button>
+        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary">
+            キャンセル
+        </a>
     </form>
+    <script>
+        document.querySelectorAll('form input, form select, form textarea').
+        forEach(el =>
+            {
+               if (el.type !== 'ceckbox' && el.type !=='radio')
+            {
+               el.classList.add('form-control');
+            }
+            });
 
-    <br>
-    <a href="{% url 'student_list' %}">一覧に戻る</a>
+        document.querySelectorAll('form select[multiple]').
+        forEach(el =>
+            {
+                el.classList.add('form-select');
+            });
+    </script>
 {% endblock %}
