@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy #リダイレクト先を作るためにインポートする
 from .models import Student 
 from .forms import StudentForm #作成したフォームをインポートする
-
+from django.db.models import Q
 
 #便利なお守りを入れるとログインが全てのviewでチェックされる。ログインしないと見れない書き換え防止
 #1,LoginRequiredMixinをインポート
@@ -29,9 +29,29 @@ class StudentListView(LoginRequiredMixin,ListView):
     #queryset=Student.objects.all().order_by('school_name')
     #このメソッドをオーバーライド(追記)
     def get_queryset(self):
+        #1 まず基本となる「自分の担当の担当顧客」を取得（第5回の内容）
+        queryset = Student.objects.filter(user=self.request.user).order_by('school_name')
+        #2.GETパラメーターから'query'(検索キーワード)を取得
+        query = self.request.GET.get('query')
+        #3.キーワードが存在する場合のみの絞り込みを行う
+        if query :
+            #Qオブジェクトを使ってOR条件を構築
+            # i containsは「大文字小文字を区別しない部分一致」
+            queryset = queryset.filter(
+                Q(school_name__icontains=query)|
+                Q(student_name__icontains=query)|
+                Q(email__icontains=query)
+            )
+        return queryset
+    #検索キーワードをテンプレートに返すための設定(UX向上)
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        #テンプレートのvalue="{{query}}"に渡す値を設定
+        context['query']=self.request.GET.get('query', '')
+        return context
         #ログインしているユーザー(self.request.user)が担当する
         #生徒のデータのみを学校名前順で取得する
-        return Student.objects.filter(user=self.request.user).order_by('school_name')    
+        #return Student.objects.filter(user=self.request.user).order_by('school_name')    
     
 #生徒詳細用のページ
 class StudentDetailView(LoginRequiredMixin,DetailView):
