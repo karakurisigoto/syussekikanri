@@ -70,4 +70,117 @@
     </div>
 </div>
 
+
+<h3 class="mt-4">履歴</h3>
+
+<div class="card mb-3 bg-light">
+    <div class="card-body">
+        <h6 class="card-title">履歴を追加</h6>
+        <form id="activity-form">
+            {% csrf_token %}
+        <input type="hidden" name="student_id" value="{{student.id}}">
+
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="date" name="activity_date" class="form-control"required >
+            </div>
+
+        <div class="col-md-3">
+            <select name ="status" class="form-select">
+                <option value="pending">未開始</option>
+                <option value="scheduled">参加予定</option>
+                <option value="attended">出席済み</option>
+                <option value="absent">欠席</option>
+                <option value="completed">完了</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <input type="text" name="note" class="form-control" placeholder="メモを入力" required>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">追加</button>
+        </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="list-group list-group-flush" id="activity-list">
+            {% for activity in student.activity_set.all|dictsortreversed:"activity-date" %}
+            <li class="list-group-item">
+                <strong>{{activity.activity_date}}</strong>
+                <span class="badge bg-secondary ms-2">
+                    {{activity.get_status_display}}
+                </span>
+                <br>
+                {{activity.note | linebreaksbr}}
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted" id="no-activity-msg">
+                履歴は
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.getElementById('activity-form').addEventListener('submit', function(e)
+    {e.preventDefault();//1.画面推移の（本来の通信を止める）
+
+        const form = this;
+        const formData = new FormData(form); //フォームのデータを自動収集
+        const url = "{% url 'ajax_add_activity' %}" //送信先URL
+
+    //2.Fetch APIで非同期通信
+    fetch(url,{
+        method:'POST',
+        body:formData,
+        headers:{
+            'X-Requested-With':'XMLHttpRequest' //Djangoにajaxだと認識させる呪い
+        }
+    })
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); //レスポンスをJSONとしてパース
+    })    
+    .then(data => {
+    //3.成功時の処理：画面に新しい行を追加する
+    //「ありません」メッセージがあれば消す
+    const noMsg = document.getElementById('no-activity-msg');
+    if(noMsg)noMsg.remove();
+
+    //新しいHTML要素を作成
+    const list = document.getElementById('activity-list');
+    const newItem = document.createElement('li');
+    newItem.className = 'list-group-item bg-info bg-opacity-10';
+    //追加されたことがわかるように薄い色をつける
+    newItem.innerHTML = `
+    <strong>${data.activity_date}</strong>
+    <span class="badge bg-secondary ms-2">${data.status}</span>
+    <br>
+    ${data.note}
+    `;
+    //リストの先頭に追加
+    list.prepend(newItem);
+
+    //フォームを空にする
+    form.reset();
+    })
+
+    .catch(error => {
+        console.error('Error:',error);
+        alert('エラーが発生しました。');
+    });
+  });
+</script>
+
+
+
 {% endblock %}

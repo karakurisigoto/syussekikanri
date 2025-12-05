@@ -6,6 +6,13 @@ from .models import Student
 from .forms import StudentForm #作成したフォームをインポートする
 from django.db.models import Q
 
+from django.http import JsonResponse #jsonを返すために必要
+from django.views.decorators.http import require_POST  #POSTのみ許可
+from django.contrib.auth.decorators import login_required #ログイン必須
+from .models import Student, Activity
+from .forms import ActivityForm #あとで作る 
+from django.shortcuts import get_object_or_404
+
 #便利なお守りを入れるとログインが全てのviewでチェックされる。ログインしないと見れない書き換え防止
 #1,LoginRequiredMixinをインポート
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -105,3 +112,37 @@ class StudentDeleteView(LoginRequiredMixin,DeleteView):
     def get_queryset(self):
     #自分が担当のデータのみを対象とする
         return Student.objects.filter(user=self.request.user)
+
+@login_required
+@require_POST #POSTリクエスト以外は拒否するデコレータ
+def ajax_add_activity(request):
+    student_id = request.POST.get('student_id')
+    student = get_object_or_404(Student, id=student_id)
+    
+    #自分の担当でなければエラー
+    if student.user != request.user:
+        return JsonResponse({'message':'権限がない'}, status=403)
+    
+    #フォームを使ってバリデーション（手抜きせずにFormクラスを使うのがプロ）
+    form = ActivityForm(request.POST)
+    
+    if form.is_valid():
+        #まだデータベースにない
+        activity = form.save(commit=False)
+        activity.student = student  #紐付け
+        activity.save() #保存
+        
+        #JavaScript側に渡すデータを辞書で作る
+        response_data = {
+            'message':'成功しました',
+            'activity_date':activity.activity_date.strftime('%Y-%m-%d'),
+            'status':activity.get_status_display(),
+            'note':activity.note,
+        }
+        return JsonResponse(response_data)#JSONとしてかえす
+    else:
+        #バリデーションエラーの場合
+        return JsonResponse({
+            'message':'入力に誤りがあります',
+            'errors': form.errors
+            }, status=400)

@@ -6,7 +6,10 @@ from .views import(
     StudentDetailView,
     StudentCreateView,
     StudentUpdateView,
-    StudentDeleteView
+    StudentDeleteView,
+    
+    ajax_add_activity,#追加
+    
 )
 
 urlpatterns =[
@@ -29,4 +32,8 @@ urlpatterns =[
     #削除ページ
     path('student/<int:pk>/delete/', StudentDeleteView.as_view(), name='student_delete'),
     
+
+    #Ajax処理用URL
+    path('ajax/add_activity/',ajax_add_activity,name='ajax_add_activity'),
+
 ]

@@ -1,6 +1,8 @@
 from django import forms
 from .models import Student
 
+from .models import Student,Activity
+
 class StudentForm(forms.ModelForm):
     class Meta:
         model= Student #どのモデルをベースにするか？
@@ -13,4 +15,14 @@ class StudentForm(forms.ModelForm):
         widgets={
             'user':forms.Select(attrs={'class': 'form-contarol'}),
             'tags':forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
+        
+class ActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields =('activity_date','status','note')
+        widgets={
+            'activity_date':forms.DateInput(attrs={'type':'date','class':'form-control'}),
+            'status':forms.Select(attrs={'class':'form-control'}),
+            'note':forms.Textarea(attrs={'class':'form-control','rows':2}),
         }
