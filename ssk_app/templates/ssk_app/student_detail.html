@@ -110,7 +110,7 @@
 <div class="card">
     <div class="card-body">
         <ul class="list-group list-group-flush" id="activity-list">
-            {% for activity in student.activity_set.all|dictsortreversed:"activity-date" %}
+            {% for activity in student.activity_set.all|dictsortreversed:"activity_date" %}
             <li class="list-group-item">
                 <strong>{{activity.activity_date}}</strong>
                 <span class="badge bg-secondary ms-2">
