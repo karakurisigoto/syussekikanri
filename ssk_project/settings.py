@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
 import os
 #dotenvをインポート
@@ -26,9 +26,12 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 #SECRET_KEY = 'django-insecure-*4*i#jg=5_bar!j#^gs@f$o=#xb=glefmy0(-d^%f-*nb==#je'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+#.envから読み込む
+DEBUG =os.environ.get('DEBUG','False')=='True'
+#許可するドメイン.本番ではRenderのURLが入る
+#'*'は前許可だが、実務ではドメイン指定推奨
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,6 +48,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    #ここに追加する
+    'whitenoise.middkeware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,9 +86,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+            }
 }
 
+#追加12月12日本環境、それを使う設定で上書きする
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -120,6 +128,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+#追加
+
+#1staticフォルダに入れたファイルを集める場所
+STATICFILES_DIRS= [BASE_DIR/"static"]
+#2本環境で、全アプリの静的ファイルを集約する場所
+STATIC_ROOT = BASE_DIR/'static'
+#3whitenoiseが圧縮して配信するための設定
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
