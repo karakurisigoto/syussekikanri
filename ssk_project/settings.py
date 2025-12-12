@@ -133,7 +133,7 @@ STATIC_URL = 'static/'
 #1staticフォルダに入れたファイルを集める場所
 STATICFILES_DIRS= [BASE_DIR/"static"]
 #2本環境で、全アプリの静的ファイルを集約する場所
-STATIC_ROOT = BASE_DIR/'static'
+STATIC_ROOT = BASE_DIR/'staticfiles'
 #3whitenoiseが圧縮して配信するための設定
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
